@@ -3,8 +3,8 @@ BlackJack
 
 Blackjack Program (Ruby)
 
-Simple Black Jack program. 
+Simple BlackJack program. 
 
-To run this program, simply type ruby blackjackgame.rb in the terminal.
+To run this program, simply type ruby blackjack.rb in the terminal.
 
 Enjoy the game.
