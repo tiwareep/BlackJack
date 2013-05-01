@@ -1,5 +1,5 @@
 #Blackjack class that allows one to play the game
-#Contains a playgame method that allows usesrs to play the game of Blackjack
+#Contains a playgame method that allows users to play the game of Blackjack
 
 load 'Player.rb'
 load 'Deck.rb'
