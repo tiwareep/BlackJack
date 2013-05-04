@@ -9,7 +9,7 @@ load 'Card.rb'
 class Blackjack
   # start the game and ask the number of players
   def playgame
-    puts "\nWelcome to BlackJack, also Known as 21!"
+    puts "\nWelcome to BlackJack Game!"
     puts "\nHow many players are at the table? (You can have maximum of 5 players)"
     numplayers = gets.to_i
     while ![1,2,3,4,5].include?(numplayers)
