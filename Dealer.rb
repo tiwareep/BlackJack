@@ -14,7 +14,7 @@ class Dealer < Player
   end
 
   def printonecard
-    puts "\nThe Dealer cards you can see is :"
+    puts "\nThe Dealer's card you can see is :"
     puts "#{@cards[0].suit} #{@cards[0].value}"
     puts "The total value of Dealer's cards is unknown\n"
   end

@@ -37,11 +37,19 @@ class Blackjack
       totalbalance += players[i].balance
     end
 
+    #Initializing number of splitting as 0
+    numofsplit = 0 
     #don't stop playing untill the total balance is 0 so there is atleast one player with some money left
     while (totalbalance > 0)
       #input the bet and check if the bet is less than your balance
+
+      #resets player's hassplitted attribute to 0
       players.each do |p|
-        puts "Player #{p.index}, please input your bet!"
+        p.hassplitted = 0
+      end
+
+      players.each do |p|
+        puts "\nPlayer #{p.index}, please input your bet!"
         p.bet = gets.to_i
         while p.bet > p.balance
           puts "Player #{p.index}, please input a value less than or equal to your balance of #{p.balance}"
@@ -73,7 +81,7 @@ class Blackjack
       players.each do |p|
         #total value of the card should be less than 21 otherwise its no longer in this while loop
         while p.totalvalue <= 21
-          puts "What would Player #{p.index} like to do? 1) hit 2) stay 3)double-bet 4)split-bet\n"
+          puts "\nWhat would Player #{p.index} like to do? 1)hit 2)stay 3)double-bet 4)split-bet\n"
           input = gets.chomp
           #error checking
           while !['1', '2', '3', '4'].include?(input)
@@ -84,7 +92,7 @@ class Blackjack
           #player chooses to stay
           if input == "2"
             puts "Player #{p.index} chooses to stay.\n"
-          break
+            break
           end
 
           #player decides to double his bet so his bet increases by 2 times and he can only have one more card
@@ -94,19 +102,38 @@ class Blackjack
               p.hit(deck)
               p.print(p.index)
               p.bet *= 2
-            break
+              break
             else
               puts "\nYou dont have enough balance to double-bet! So you will continue to hit"
             end
           end
 
           #player decides to split his bet so his bet decreased by 2 times and he can only have one more card
-          if input == "4"
-            puts "Player #{p.index} chooses to split bet.\n"
-            p.hit(deck)
-            p.print(p.index)
-            p.bet /= 2
-          break
+          size = players.size
+          if input == "4" 
+            if p.cards.size == 0 && p.cards[0].value.eql?(p.cards[1].value)
+              if p.hassplitted == 0
+                if p.balance >= 2 * p.bet
+                  puts "\nPlayer #{p.index} chooses to split hands.\n"
+                  players[size] = Player.new(p.index)
+                  p.split(deck)
+                  p.hassplitted = 1
+                  players[size].hassplitted = 1
+                  players[size].cards << p.splittedcard
+                  players[size].hit(deck)
+                  puts "The 2nd card of the splitted card is #{players[size].cards[1].suit} #{players[size].cards[1].value}"
+                  puts "The total value of the splitted card is now #{players[size].totalvalue}" 
+                  p.bet *=2
+                  numofsplit += 1
+                else
+                  puts "\nYou dont have enough balance to split-hand! So you will continue to hit"
+                end
+              else
+                puts "\nYou have already splitted the hands once before in the same round so you can't do it again! So you will continue with hit."
+              end
+            else
+              puts "\nYou cannot split the hands because your two cards are not the same! So you will continue with hit!"
+            end
           end
 
           #when player decies to hit, he draws one card and then it prints the player's cards
@@ -116,7 +143,7 @@ class Blackjack
           #if the total value of the card is greater than 21 the player automatically looses the round
           if p.totalvalue > 21
             puts "\nPlayer #{p.index} loses this round"
-          winning[players.index(p)] = -1
+            winning[players.index(p)] = -1
           end
         end
       end
@@ -131,12 +158,12 @@ class Blackjack
           players.size.times do |i|
             winning[i] = -1
           end
-        break
+          break
         end
       end
 
       #prints out the final cards for the players and the dealers
-      puts "\n All the Cards for the Players and the Dealer are:\n"
+      puts "\nAll the Cards for the Players and the Dealer are:\n"
       players.each do |p|
         p.print(p.index)
       end
@@ -155,13 +182,20 @@ class Blackjack
         end
       end
 
+      ##since splitting hands creates a new player element, you want to delete that now
+      while numofsplit > 0
+        players.delete_at(players.size - 1)
+        winning.delete_at(winning.size - 1)
+        numofsplit -= 1
+      end
+
       #according to what the values are in the win array, prints out the balance of each player
       winning.each_with_index do |w, i|
         if winning[i] != -1
           players[i].balance += players[i].bet
           puts "Player #{players[i].index} now has the balance of #{players[i].balance}"
         else
-        players[i].balance -= players[i].bet
+          players[i].balance -= players[i].bet
           puts "Player #{players[i].index} now has the balance of #{players[i].balance}"
         end
       end
@@ -179,7 +213,7 @@ class Blackjack
       #update player and player winning arrays according to game results
       players.each do |p|
         if p.balance != 0
-        temp << p
+          temp << p
         else
           puts "\nPlayer #{p.index} has been deleted because he has no money to continue!\n"
         end
@@ -201,7 +235,7 @@ class Blackjack
       #if there are no more players in the game then the game ends
       if players.empty?
         puts "\nThere are no longer any players playing. The Game has ended!"
-      break
+        break
       end
       
     end

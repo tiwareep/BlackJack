@@ -4,7 +4,7 @@
 load 'Deck.rb'
 
 class Player
-  attr_accessor :index, :balance, :bet
+  attr_accessor :index, :balance, :bet, :splittedcard, :cards, :hassplitted
   #initialize balance to be 1000 as instructed
   #index represents player's index number
   def initialize (index)
@@ -12,6 +12,7 @@ class Player
     @balance = 1000
     @bet = 0
     @cards = Array.new
+    @hassplitted = 0
   end
 
   #draws two cards from the deck
@@ -24,6 +25,12 @@ class Player
   def hit(deck)
     @cards << deck.drawcard
   end
+
+  def split(deck)
+    @splittedcard = @cards.pop
+  end
+
+
 
   #when player doesn't decide to hit
   def stay
